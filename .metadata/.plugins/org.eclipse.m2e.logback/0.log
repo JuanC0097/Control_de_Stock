@@ -720,3 +720,5 @@
 2023-04-26 19:18:06,674 [Worker-71: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\POWER\desarrollo\proyecto_conexion_db\1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos-aula-2-views\src\test\resources
 2023-04-26 19:47:31,002 [Worker-75: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
 2023-04-26 19:47:31,003 [Worker-75: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\POWER\desarrollo\proyecto_conexion_db\1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos-aula-2-views\src\main\resources
+2023-04-26 19:47:31,004 [Worker-75: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2023-04-26 19:47:31,004 [Worker-75: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\POWER\desarrollo\proyecto_conexion_db\1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos-aula-2-views\src\test\resources
