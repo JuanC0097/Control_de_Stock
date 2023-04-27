@@ -198,7 +198,7 @@ public class ControlDeStockFrame extends JFrame {
 						e.printStackTrace();
 						throw new RuntimeException(e);
 					}
-                    JOptionPane.showMessageDialog(this, filasModificadas + "%d Item Modificado con éxito!");
+                    JOptionPane.showMessageDialog(this, filasModificadas + " Item Modificado con éxito!");
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
 

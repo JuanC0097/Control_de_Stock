@@ -15,43 +15,14 @@ import com.alura.jdbc.factory.ConnectionFactory;
 
 public class ProductoController {
 
-	public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) throws SQLException {
-		Connection con = new ConnectionFactory().recuperarConexion();
-		Statement statement =  con.createStatement();
-		statement.execute("UPDATE PRODUCTO SET " 
-				+ " NOMBRE = '" + nombre + "'"
-				+ ", DESCRIPCION = '" + descripcion + "'"
-				+ ", CANTIDAD = " + cantidad
-				+ " WHERE ID = " + id);
-		
-		int updateCount = statement.getUpdateCount();
-		
-		con.close();
-		return  updateCount;
-		}
-
-	
-	/*
-	 * 1.Utilizamos throws para informar de SQLEcepcion, sera tratada despues.
-	 * 2.Creara una nueva conexion y traera el metodo recuperarConexion
-	 * 3.Se crea un nuevo objeto Statement
-	 * 4.Se llama al metodo execute de Statement y se agregan las acciones que realizara,en 
-	 *   este caso DELETE
-	 * 5.El metodo execute devuelte un valor booleano True si el resultado de la query es un 
-	 *   result.set'Listado' o False si no es un resultset.
-	 * 6. el metodo de Statement.getUpdateCount, nos permite conocer el numero de filas modificadas
-	 *    luego de ejecutar el comando sql en el Statement, devuelve int.
-	 * 7. retornamos este valor desde la aplicacion
-	 *  
-	 */
-	public int eliminar(Integer id) throws SQLException {
-		Connection con = new ConnectionFactory().recuperarConexion();
-		Statement statement =  con.createStatement();
-		statement.execute("DELETE FROM PRODUCTO WHERE ID = " + id);
-		return  statement.getUpdateCount();
+	public void modificar(String nombre, String descripcion, Integer id) {
+		// TODO
 	}
 
-	
+	public void eliminar(Integer id) {
+		// TODO
+	}
+
 	public List<Map<String, String>> listar() throws SQLException {
 		Connection con = new ConnectionFactory().recuperarConexion();
 		
