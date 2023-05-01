@@ -137,24 +137,16 @@ public class ProductoController {
 				+ "(nombre, descripcion, cantidad)" 
 				+ " VALUES (?,?,?)",Statement.RETURN_GENERATED_KEYS);
 		
-		try {
-			do {
-				int cantidadGuardar = Math.min(cantidad, maximoCantidad);
-				
-				ejecutaRegistro(nombre, descripcion, cantidadGuardar, statement);
-				
-				cantidad -= maximoCantidad;
-				
-			} while (cantidad > 0);
-			con.commit();
-			System.out.println("Commit");
-		} catch (Exception e) {
-			con.rollback();
-			System.out.println("ROLLBACK");
-		}
+		do {
+			int cantidadGuardar = Math.min(cantidad, maximoCantidad);
+			
+			ejecutaRegistro(nombre, descripcion, cantidadGuardar, statement);
+			
+			cantidad -= maximoCantidad;
+			
+		} while (cantidad > 0);
 		
-		statement.close();
-		
+		con.commit();
 		con.close();
 	}
 

@@ -147,10 +147,8 @@ public class ProductoController {
 				
 			} while (cantidad > 0);
 			con.commit();
-			System.out.println("Commit");
 		} catch (Exception e) {
 			con.rollback();
-			System.out.println("ROLLBACK");
 		}
 		
 		statement.close();

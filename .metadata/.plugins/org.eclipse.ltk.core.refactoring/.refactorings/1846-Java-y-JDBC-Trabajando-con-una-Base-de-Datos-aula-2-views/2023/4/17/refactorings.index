@@ -3,3 +3,8 @@
 1682478937949	Move compilation unit
 1682478995683	Move compilation unit
 1682479120101	Rename package 'com.alura.jdbc.factory.copy'
+1682616261153	Extract local variable 'sql'
+1682721172258	Extract local variable 'x'
+1682721208539	Extract local variable 'x'
+1682721228784	Extract local variable 'valueOf'
+1682721408106	Extract method 'extracted'

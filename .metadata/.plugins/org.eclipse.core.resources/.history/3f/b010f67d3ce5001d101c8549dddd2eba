@@ -17,20 +17,13 @@ import com.alura.jdbc.factory.ConnectionFactory;
 public class ProductoController {
 
 	public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) throws SQLException {
-		ConnectionFactory factory = new ConnectionFactory();
-		Connection con = factory.recuperarConexion();
-		
-		PreparedStatement statement = con.prepareStatement("UPDATE PRODUCTO SET " 
-				+ " NOMBRE = ?"
-				+ ", DESCRIPCION = ?"
-				+ ", CANTIDAD = ?"
-				+ " WHERE ID = ?");
-		statement.setString(1, nombre);
-		statement.setString(2, descripcion);
-		statement.setInt(3, cantidad);
-		statement.setInt(4, id);
-		
-		statement.execute();
+		Connection con = new ConnectionFactory().recuperarConexion();
+		Statement statement =  con.createStatement();
+		statement.execute("UPDATE PRODUCTO SET " 
+				+ " NOMBRE = '" + nombre + "'"
+				+ ", DESCRIPCION = '" + descripcion + "'"
+				+ ", CANTIDAD = " + cantidad
+				+ " WHERE ID = " + id);
 		
 		int updateCount = statement.getUpdateCount();
 		
@@ -101,8 +94,7 @@ public class ProductoController {
 	}
 
 	/*
-	 * 1.Solicitara el map de producto, he informa del sql Exception
-	 * 2.Guarda los datos obtenidos en variables locales
+	 * 1.Solicitara el map de producto
 	 * 2.Crear un nuevo objeto de tipo ConnectionFactory y traera el metodo recuperConexion
 	 * 3.Implementacion de la interfaz PreparedStatement,para evitar una SQLInyection,
 	 *   declaracion de la query modificada para la interfaz.
@@ -124,46 +116,13 @@ public class ProductoController {
 	 *   el id generado en la consulta
 	 */
     public void guardar(Map<String, String> producto) throws SQLException {
-    	String nombre = producto.get("NOMBRE");
-		String descripcion = producto.get("DESCRIPCION");
-		Integer cantidad = Integer.valueOf(producto.get("CANTIDAD"));
-    	Integer maximoCantidad = 50;
+		Connection con = new ConnectionFactory().recuperarConexion();
 		
-		ConnectionFactory factory = new ConnectionFactory();
-    	Connection con = factory.recuperarConexion();
-    	con.setAutoCommit(false);
-		
-		PreparedStatement statement = con.prepareStatement("INSERT INTO PRODUCTO"
-				+ "(nombre, descripcion, cantidad)" 
+		PreparedStatement statement = con.prepareStatement("INSERT INTO PRODUCTO (nombre, descripcion, cantidad)" 
 				+ " VALUES (?,?,?)",Statement.RETURN_GENERATED_KEYS);
-		
-		try {
-			do {
-				int cantidadGuardar = Math.min(cantidad, maximoCantidad);
-				
-				ejecutaRegistro(nombre, descripcion, cantidadGuardar, statement);
-				
-				cantidad -= maximoCantidad;
-				
-			} while (cantidad > 0);
-			con.commit();
-			System.out.println("Commit");
-		} catch (Exception e) {
-			con.rollback();
-			System.out.println("ROLLBACK");
-		}
-		
-		statement.close();
-		
-		con.close();
-	}
-
-
-	private void ejecutaRegistro(String nombre, String descripcion, Integer cantidad, PreparedStatement statement)
-			throws SQLException {
-		statement.setString(1,nombre);
-		statement.setString(2, descripcion);
-		statement.setInt(3, cantidad);
+		statement.setString(1,producto.get("NOMBRE"));
+		statement.setString(2, producto.get("DESCRIPCION"));
+		statement.setInt(3, Integer.valueOf(producto.get("CANTIDAD")));
 		statement.execute();
 		
 		ResultSet resultSet = statement.getGeneratedKeys();
@@ -172,6 +131,7 @@ public class ProductoController {
 			System.out.println(
 					String.format("Fue insertado el producto de ID %d", resultSet.getInt(1)));
 		}
+		
 	}
 
 }

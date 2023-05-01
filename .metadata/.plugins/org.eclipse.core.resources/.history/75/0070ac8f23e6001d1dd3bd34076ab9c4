@@ -101,8 +101,7 @@ public class ProductoController {
 	}
 
 	/*
-	 * 1.Solicitara el map de producto, he informa del sql Exception
-	 * 2.Guarda los datos obtenidos en variables locales
+	 * 1.Solicitara el map de producto
 	 * 2.Crear un nuevo objeto de tipo ConnectionFactory y traera el metodo recuperConexion
 	 * 3.Implementacion de la interfaz PreparedStatement,para evitar una SQLInyection,
 	 *   declaracion de la query modificada para la interfaz.
@@ -131,30 +130,19 @@ public class ProductoController {
 		
 		ConnectionFactory factory = new ConnectionFactory();
     	Connection con = factory.recuperarConexion();
-    	con.setAutoCommit(false);
 		
 		PreparedStatement statement = con.prepareStatement("INSERT INTO PRODUCTO"
 				+ "(nombre, descripcion, cantidad)" 
 				+ " VALUES (?,?,?)",Statement.RETURN_GENERATED_KEYS);
 		
-		try {
-			do {
-				int cantidadGuardar = Math.min(cantidad, maximoCantidad);
-				
-				ejecutaRegistro(nombre, descripcion, cantidadGuardar, statement);
-				
-				cantidad -= maximoCantidad;
-				
-			} while (cantidad > 0);
-			con.commit();
-			System.out.println("Commit");
-		} catch (Exception e) {
-			con.rollback();
-			System.out.println("ROLLBACK");
-		}
-		
-		statement.close();
-		
+		do {
+			int cantidadGuardar = Math.min(cantidad, maximoCantidad);
+			
+			ejecutaRegistro(nombre, descripcion, cantidadGuardar, statement);
+			
+			cantidad -= maximoCantidad;
+			
+		} while (cantidad > 0);
 		con.close();
 	}
 
