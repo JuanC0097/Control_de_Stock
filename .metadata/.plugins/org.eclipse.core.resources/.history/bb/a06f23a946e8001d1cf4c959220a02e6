@@ -159,9 +159,9 @@ public class ProductoController {
 
 
     /*
-     * Cerrar conexiones con la version 9 de java
-     * Sacamos el Result set del try, lo declaramos con final
-     * en el bloque de try agregamos el objeto resultSet
+     * Cerrar conexiones con la version 7 de java
+     * La interfaz ResultSet impplementa AutoCloseable, por eso la interfaz no se queja
+     * la jvm cierra estos recursos
      */
 	private void ejecutaRegistro(String nombre, String descripcion, Integer cantidad, PreparedStatement statement)
 			throws SQLException {
@@ -170,8 +170,7 @@ public class ProductoController {
 		statement.setInt(3, cantidad);
 		statement.execute();
 		
-		final ResultSet resultSet = statement.getGeneratedKeys();
-		try (resultSet) {
+		try (ResultSet resultSet = statement.getGeneratedKeys();) {
 			
 			while (resultSet.next()) {
 				System.out.println(
