@@ -3,4 +3,3 @@ INDEX VERSION 1.132+C:\Users\POWER\desarrollo\proyecto_conexion_db\.metadata\.pl
 1865797976.index
 787514403.index
 2996141153.index
-1675533943.index
