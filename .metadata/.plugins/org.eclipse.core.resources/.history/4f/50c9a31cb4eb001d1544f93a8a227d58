@@ -1,0 +1,192 @@
+package com.alura.jdbc.controller;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.alura.jdbc.factory.ConnectionFactory;
+
+
+public class ProductoController {
+
+	public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) throws SQLException {
+		ConnectionFactory factory = new ConnectionFactory();
+		final Connection con = factory.recuperarConexion();
+		try(con){
+			
+		   final PreparedStatement statement = con.prepareStatement("UPDATE PRODUCTO SET " 
+				+ " NOMBRE = ?"
+				+ ", DESCRIPCION = ?"
+				+ ", CANTIDAD = ?"
+				+ " WHERE ID = ?");
+		   
+		   try(statement){
+				statement.setString(1, nombre);
+				statement.setString(2, descripcion);
+				statement.setInt(3, cantidad);
+				statement.setInt(4, id);
+				
+				statement.execute();
+				
+				int updateCount = statement.getUpdateCount();
+				
+				return  updateCount;
+		   	}
+		}	 
+	}
+
+	
+	/*
+	 * 1.Utilizamos throws para informar de SQLEcepcion, sera tratada despues.
+	 * 2.Creara una nueva conexion y traera el metodo recuperarConexion
+	 * 3.Se crea un nuevo objeto Statement
+	 * 4.Se llama al metodo execute de Statement y se agregan las acciones que realizara,en 
+	 *   este caso DELETE
+	 * 5.El metodo execute devuelte un valor booleano True si el resultado de la query es un 
+	 *   result.set'Listado' o False si no es un resultset.
+	 * 6. el metodo de Statement.getUpdateCount, nos permite conocer el numero de filas modificadas
+	 *    luego de ejecutar el comando sql en el Statement, devuelve int.
+	 * 7. retornamos este valor desde la aplicacion
+	 *  
+	 */
+	public int eliminar(Integer id) throws SQLException {
+		ConnectionFactory factory = new ConnectionFactory();
+		final Connection con = factory.recuperarConexion();
+		
+		
+		try(con){
+			 
+			final PreparedStatement statement = con.prepareStatement("DELETE FROM PRODUCTO WHERE ID = ?");
+			try(statement){ 
+				statement.setInt(1, id);
+				statement.execute();
+				
+				int updateCount = statement.getUpdateCount();
+				
+				return  updateCount;
+			}
+		}
+	}
+
+	
+	public List<Map<String, String>> listar() throws SQLException {
+		ConnectionFactory factory = new ConnectionFactory();
+		final Connection con = factory.recuperarConexion();
+		
+		try(con){
+			//Statement= comandos de SQl
+			final PreparedStatement statement = con.prepareStatement("SELECT ID,NOMBRE, DESCRIPCION, CANTIDAD FROM PRODUCTO");
+			
+			try(statement){
+				statement.execute();
+				
+				ResultSet resultSet = statement.getResultSet();
+				
+				List<Map<String, String>> resultado = new ArrayList<>();
+				
+				
+				
+				//leer el contenido y agregar a un listado de resultado y devolverlo a la app
+				while (resultSet.next()) {
+					Map<String, String> fila = new HashMap<>();
+					fila.put("ID", String.valueOf(resultSet.getInt("ID")));
+					fila.put("NOMBRE", resultSet.getString("NOMBRE"));
+					fila.put("DESCRIPCION", resultSet.getString("DESCRIPCION"));
+					fila.put("CANTIDAD", resultSet.getString("CANTIDAD"));
+					
+					resultado.add(fila);
+				}
+				
+				return resultado;
+			}
+		}
+		
+	}
+
+	/*
+	 * 1.Solicitara el map de producto, he informa del sql Exception
+	 * 2.Guarda los datos obtenidos en variables locales
+	 * 2.Crear un nuevo objeto de tipo ConnectionFactory y traera el metodo recuperConexion
+	 * 3.Implementacion de la interfaz PreparedStatement,para evitar una SQLInyection,
+	 *   declaracion de la query modificada para la interfaz.
+	 * 4.CON JDBC podemos saber cual es el producto que fue insertado, segun su id. 
+	 *   el metodo execute tiene un parametro adicional para señalar si una clave autogenerable fue
+	 *   creada, en este caso el ID
+	 * 5.Agregamos el parametro de la clase Statement y su constante 
+	 *   .RETURN_GENERATED_KEYS, la cual nos permite tomar como valor el id de la query de 
+	 *   insert
+	 * 6.llamamos al metodo de statement .setString para los campos de nombre y descripcion
+	 *   y al metodo .setInt para el campo numero de cantidad  
+	 * 7.El metodo execute devuelte un valor booleano True si el resultado de la query es un 
+	 *   result.set'Listado' o False si no es un resultset. EN CASO DE INSERT EL RETORNO NO SERA 
+	 *   UN LISTADO, sera False. ESTE VALOR NO ES UTIL PARA ESTE CASO 
+	 * 9.Obtenemos el listado de id creados durante la query, con ayuda de Resultset y el metodo de
+	 *   Statement getGeneratedKeys.
+	 *10.Recorremos la lista con un loop y utilizamos el metodo next para ir al siguiente lugar de la
+	 *   fila. Obtenemos el id generado con el metodo getInt y  En este caso deseamos saber solo 
+	 *   el id generado en la consulta
+	 */
+    public void guardar(Producto producto) throws SQLException {
+    	String nombre = producto.get("NOMBRE");
+		String descripcion = producto.get("DESCRIPCION");
+		Integer cantidad = Integer.valueOf(producto.get("CANTIDAD"));
+    	Integer maximoCantidad = 50;
+		
+		ConnectionFactory factory = new ConnectionFactory();
+    	final Connection con = factory.recuperarConexion();
+    	
+    	try (con) {
+	    	con.setAutoCommit(false);
+			
+			final PreparedStatement statement = con.prepareStatement("INSERT INTO PRODUCTO"
+					+ "(nombre, descripcion, cantidad)" 
+					+ " VALUES (?,?,?)",Statement.RETURN_GENERATED_KEYS);
+			
+			try(statement){
+				do {
+					int cantidadGuardar = Math.min(cantidad, maximoCantidad);
+						
+					ejecutaRegistro(nombre, descripcion, cantidadGuardar, statement);
+						
+					cantidad -= maximoCantidad;
+						
+				} while (cantidad > 0);
+				con.commit();
+				System.out.println("Commit");
+			} catch (Exception e) {
+				con.rollback();
+				System.out.println("ROLLBACK");
+			}
+    	}
+	}
+
+
+    /*
+     * Cerrar conexiones con la version 9 de java
+     * Sacamos el Result set del try, lo declaramos con final
+     * en el bloque de try agregamos el objeto resultSet
+     */
+	private void ejecutaRegistro(String nombre, String descripcion, Integer cantidad, PreparedStatement statement)
+			throws SQLException {
+		statement.setString(1,nombre);
+		statement.setString(2, descripcion);
+		statement.setInt(3, cantidad);
+		statement.execute();
+		
+		final ResultSet resultSet = statement.getGeneratedKeys();
+		try (resultSet) {
+			
+			while (resultSet.next()) {
+				System.out.println(
+						String.format("Fue insertado el producto de ID %d", resultSet.getInt(1)));
+			}
+		}
+	}
+
+}

@@ -1,0 +1,6 @@
+1683506123234	Rename type 'PersistenciaProducto'
+1683506194003	Rename package 'com.alura.jdbc.persistencia'
+1683506409759	Rename local variable 'persistenciaProducto'
+1683506424504	Rename local variable 'productoDao'
+1683506449503	Rename method 'guardarProducto'
+1683582463872	Delete element

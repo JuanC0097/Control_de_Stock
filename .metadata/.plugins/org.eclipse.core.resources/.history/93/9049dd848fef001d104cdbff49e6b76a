@@ -1,0 +1,19 @@
+package com.alura.jdbc.dao;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.alura.jdbc.modelo.Categoria;
+
+public class CategoriaDAO {
+
+	public CategoriaDAO(Connection recuperarConexion) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public List<Categoria> listar() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,116 @@
+package com.alura.jdbc.controller;
+
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.CallableStatement;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.NClob;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLClientInfoException;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Savepoint;
+import java.sql.Statement;
+import java.sql.Struct;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.Executor;
+
+import com.alura.jdbc.dao.ProductoDAO;
+import com.alura.jdbc.factory.ConnectionFactory;
+import com.alura.jdbc.modelo.Producto;
+
+
+public class ProductoController {
+	
+	private ProductoDAO productoDAO;
+	
+	public ProductoController() {
+		this.productoDAO = new ProductoDAO(new ConnectionFactory().recuperarConexion());
+	}
+
+	public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) throws SQLException {
+		ConnectionFactory factory = new ConnectionFactory();
+		final Connection con = factory.recuperarConexion();
+		try(con){
+			
+		   final PreparedStatement statement = con.prepareStatement("UPDATE PRODUCTO SET " 
+				+ " NOMBRE = ?"
+				+ ", DESCRIPCION = ?"
+				+ ", CANTIDAD = ?"
+				+ " WHERE ID = ?");
+		   
+		   try(statement){
+				statement.setString(1, nombre);
+				statement.setString(2, descripcion);
+				statement.setInt(3, cantidad);
+				statement.setInt(4, id);
+				
+				statement.execute();
+				
+				int updateCount = statement.getUpdateCount();
+				
+				return  updateCount;
+		   	}
+		}	 
+	}
+
+	
+	/*
+	 * 1.Utilizamos throws para informar de SQLEcepcion, sera tratada despues.
+	 * 2.Creara una nueva conexion y traera el metodo recuperarConexion
+	 * 3.Se crea un nuevo objeto Statement
+	 * 4.Se llama al metodo execute de Statement y se agregan las acciones que realizara,en 
+	 *   este caso DELETE
+	 * 5.El metodo execute devuelte un valor booleano True si el resultado de la query es un 
+	 *   result.set'Listado' o False si no es un resultset.
+	 * 6. el metodo de Statement.getUpdateCount, nos permite conocer el numero de filas modificadas
+	 *    luego de ejecutar el comando sql en el Statement, devuelve int.
+	 * 7. retornamos este valor desde la aplicacion
+	 *  
+	 */
+	public int eliminar(Integer id) throws SQLException {
+		ConnectionFactory factory = new ConnectionFactory();
+		final Connection con = factory.recuperarConexion();
+		
+		
+		try(con){
+			 
+			final PreparedStatement statement = con.prepareStatement("DELETE FROM PRODUCTO WHERE ID = ?");
+			try(statement){ 
+				statement.setInt(1, id);
+				statement.execute();
+				
+				int updateCount = statement.getUpdateCount();
+				
+				return  updateCount;
+			}
+		}
+	}
+
+	
+	public List<Producto> listar() {
+		return productoDAO.listar();
+
+		}
+		
+
+
+	/*
+	 * Recibe como parametro un producto
+	 * 1.Crea un nuevo objeto conexion 
+	 * 2.Guarda el producto dentro del nuevo objeto conexion
+	 */
+    public void guardar(Producto producto) {
+    	productoDAO.guardar(producto);
+	}
+
+
+}
