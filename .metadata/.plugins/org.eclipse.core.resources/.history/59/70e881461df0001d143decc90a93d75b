@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.alura.jdbc.dao.ProductoDAO;
 import com.alura.jdbc.factory.ConnectionFactory;
-import com.alura.jdbc.modelo.Categoria;
 import com.alura.jdbc.modelo.Producto;
 
 
@@ -32,13 +31,7 @@ public class ProductoController {
     }
 		
 
-	/*
-	 * Busqueda de productos por categoria
-	 */
-	public List<Producto> listar(Categoria categoria){
-		return productoDAO.listar(categoria.getId());
-	}
-	
+
 	/*
 	 * Recibe como parametro un producto
 	 * 1.Crea un nuevo objeto conexion 
