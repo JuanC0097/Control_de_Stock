@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alura.jdbc.modelo.Categoria;
-import com.alura.jdbc.modelo.Producto;
 
 
 public class CategoriaDAO {
@@ -62,8 +61,8 @@ public class CategoriaDAO {
 					
 					try(resultSet){
 				    	while(resultSet.next()) {
-				    		int categoriaId = resultSet.getInt("C.ID");
-				    		String categoriaNombre = resultSet.getString("C.NOMBRE");
+				    		int categoriaId = resultSet.getInt("ID");
+				    		String categoriaNombre = resultSet.getString("NOMBRE");
 				    		
 				    		var categoria = resultado
 				    				.stream()
@@ -74,8 +73,6 @@ public class CategoriaDAO {
 				    					
 				    					return cat;
 				    				});
-				    		Producto producto = new Producto(resultSet.getInt("P.ID"), resultSet.getString("P.NOMBRE"),resultSet.getInt("P.CANTIDAD"));
-				    		categoria.agregar(producto);
 				    	}
 				    };
 				}
